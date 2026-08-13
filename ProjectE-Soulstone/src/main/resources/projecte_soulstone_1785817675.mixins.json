@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "refmap": "projecte_soulstone_1785817675.refmap.json",
+  "minVersion": "0.8",
+  "package": "cn.autoforged.projecte_soulstone_1785817675.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BrewingStandBlockEntityAccessor",
+    "BrewingStandFuelMixin",
+    "PowderSnowImmunityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

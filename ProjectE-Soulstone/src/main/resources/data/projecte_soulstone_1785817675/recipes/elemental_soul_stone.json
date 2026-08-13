@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "projecte:arcana_ring"
+    },
+    "E": {
+      "item": "mine_fargo:empty_soul_stone"
+    }
+  },
+  "pattern": [
+    " A ",
+    "AEA",
+    " A "
+  ],
+  "result": {
+    "item": "projecte_soulstone_1785817675:elemental_soul_stone"
+  },
+  "show_notification": true
+}

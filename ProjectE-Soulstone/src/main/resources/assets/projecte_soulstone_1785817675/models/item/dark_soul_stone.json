@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "projecte_soulstone_1785817675:item/dark_soul_stone"
+  }
+}

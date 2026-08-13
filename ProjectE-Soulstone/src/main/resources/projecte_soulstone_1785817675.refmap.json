@@ -1,0 +1,26 @@
+{
+  "mappings": {
+    "cn/autoforged/projecte_soulstone_1785817675/mixin/BrewingStandFuelMixin": {
+      "serverTick": "Lnet/minecraft/world/level/block/entity/BrewingStandBlockEntity;m_155285_(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/entity/BrewingStandBlockEntity;)V"
+    },
+    "cn/autoforged/projecte_soulstone_1785817675/mixin/BrewingStandBlockEntityAccessor": {
+      "fuel": "f_58979_:I"
+    },
+    "cn/autoforged/projecte_soulstone_1785817675/mixin/PowderSnowImmunityMixin": {
+      "canFreeze": "Lnet/minecraft/world/entity/LivingEntity;m_142079_()Z"
+    }
+  },
+  "data": {
+    "searge": {
+      "cn/autoforged/projecte_soulstone_1785817675/mixin/BrewingStandFuelMixin": {
+        "serverTick": "Lnet/minecraft/world/level/block/entity/BrewingStandBlockEntity;m_155285_(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/entity/BrewingStandBlockEntity;)V"
+      },
+      "cn/autoforged/projecte_soulstone_1785817675/mixin/BrewingStandBlockEntityAccessor": {
+        "fuel": "f_58979_:I"
+      },
+      "cn/autoforged/projecte_soulstone_1785817675/mixin/PowderSnowImmunityMixin": {
+        "canFreeze": "Lnet/minecraft/world/entity/LivingEntity;m_142079_()Z"
+      }
+    }
+  }
+}

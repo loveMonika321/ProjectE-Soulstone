@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_empty_soul_stone": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mine_fargo:empty_soul_stone"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "projecte_soulstone_1785817675:alchemy_bag_soul_stone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_empty_soul_stone",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "projecte_soulstone_1785817675:alchemy_bag_soul_stone"
+    ]
+  },
+  "sends_telemetry_event": false
+}

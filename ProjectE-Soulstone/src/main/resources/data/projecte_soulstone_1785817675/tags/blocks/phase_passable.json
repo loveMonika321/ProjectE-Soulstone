@@ -1,0 +1,17 @@
+{
+  "values": [
+    "#minecraft:base_stone_overworld",
+    "#minecraft:base_stone_nether",
+    "#minecraft:dirt",
+    "#minecraft:logs",
+    "#minecraft:planks",
+    "#minecraft:coal_ores",
+    "#minecraft:iron_ores",
+    "#minecraft:gold_ores",
+    "#minecraft:copper_ores",
+    "#minecraft:redstone_ores",
+    "#minecraft:lapis_ores",
+    "#minecraft:diamond_ores",
+    "#minecraft:emerald_ores"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "E": {
+      "item": "mine_fargo:empty_soul_stone"
+    },
+    "P": {
+      "item": "projecte:philosophers_stone"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PEP",
+    "PPP"
+  ],
+  "result": {
+    "item": "projecte_soulstone_1785817675:sage_soul_stone"
+  },
+  "show_notification": true
+}

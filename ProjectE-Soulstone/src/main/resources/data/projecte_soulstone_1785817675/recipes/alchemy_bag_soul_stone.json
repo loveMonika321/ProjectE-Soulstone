@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "tag": "projecte:alchemical_bags"
+    },
+    "E": {
+      "item": "mine_fargo:empty_soul_stone"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "BEB",
+    "BBB"
+  ],
+  "result": {
+    "item": "projecte_soulstone_1785817675:alchemy_bag_soul_stone"
+  },
+  "show_notification": true
+}
