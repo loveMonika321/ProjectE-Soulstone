@@ -20,15 +20,16 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Cache Gradle dependencies
-      uses: actions/cache@v4
+    - name: Setup Gradle 8.5
+      uses: gradle/gradle-build-action@v3
       with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
+        gradle-version: '8.5'
 
     - name: Build with Gradle
       run: gradle build --no-daemon -Dorg.gradle.jvmargs=-Xmx2G
+
+    - name: Upload built JAR artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Forge-1.20.1-Mod
+        path: build/libs/*.jar
