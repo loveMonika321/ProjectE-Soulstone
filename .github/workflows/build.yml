@@ -20,13 +20,18 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Gradle 8.5
+    - name: Setup Gradle 8.2.1
       uses: gradle/gradle-build-action@v3
       with:
-        gradle-version: '8.5'
+        gradle-version: '8.2.1'
+
+    - name: Remove conflicting settings.gradle
+      run: |
+        rm -f settings.gradle settings.gradle.kts
+        echo "settings.gradle removed to avoid repository mode conflict"
 
     - name: Build with Gradle
-      run: gradle build --no-daemon -Dorg.gradle.jvmargs=-Xmx2G
+      run: gradle build --no-daemon -Dorg.gradle.jvmargs=-Xmx2G --stacktrace
 
     - name: Upload built JAR artifact
       uses: actions/upload-artifact@v4
