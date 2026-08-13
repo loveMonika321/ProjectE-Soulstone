@@ -25,10 +25,24 @@ jobs:
       with:
         gradle-version: '8.2.1'
 
-    - name: Remove conflicting settings.gradle
+    - name: Create settings.gradle with pluginManagement
       run: |
-        rm -f settings.gradle settings.gradle.kts
-        echo "settings.gradle removed to avoid repository mode conflict"
+        cat > settings.gradle << 'EOF'
+        pluginManagement {
+            repositories {
+                gradlePluginPortal()
+                maven {
+                    name = 'Forge'
+                    url = 'https://maven.minecraftforge.net/'
+                }
+            }
+        }
+        rootProject.name = 'ProjectE-Soulstone'
+        EOF
+
+    - name: Update build.gradle plugin version to specific
+      run: |
+        sed -i "s/id 'net.minecraftforge.gradle' version '\[6.0,6.2)'/id 'net.minecraftforge.gradle' version '6.0.23'/" build.gradle
 
     - name: Build with Gradle
       run: gradle build --no-daemon -Dorg.gradle.jvmargs=-Xmx2G --stacktrace
