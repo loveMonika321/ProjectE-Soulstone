@@ -24,8 +24,8 @@ extends BlockTagsProvider {
         super(output, lookupProvider, "projecte_soulstone_1785817675", helper);
     }
 
-    protected void m_6577_(HolderLookup.Provider provider) {
-        this.m_206424_(ModTags.PHASE_PASSABLE).m_206428_(BlockTags.f_13061_).m_206428_(BlockTags.f_13062_).m_206428_(BlockTags.f_144274_).m_206428_(BlockTags.f_13106_).m_206428_(BlockTags.f_13090_).m_206428_(BlockTags.f_144262_).m_206428_(BlockTags.f_144258_).m_206428_(BlockTags.f_13043_).m_206428_(BlockTags.f_144264_).m_206428_(BlockTags.f_144260_).m_206428_(BlockTags.f_144261_).m_206428_(BlockTags.f_144259_).m_206428_(BlockTags.f_144263_);
+    protected void addTags(HolderLookup.Provider provider) {
+        this.tag(ModTags.PHASE_PASSABLE).addTag(BlockTags.BASE_STONE_OVERWORLD).addTag(BlockTags.BASE_STONE_NETHER).addTag(BlockTags.DIRT).addTag(BlockTags.LOGS).addTag(BlockTags.PLANKS).addTag(BlockTags.COAL_ORES).addTag(BlockTags.IRON_ORES).addTag(BlockTags.GOLD_ORES).addTag(BlockTags.COPPER_ORES).addTag(BlockTags.REDSTONE_ORES).addTag(BlockTags.LAPIS_ORES).addTag(BlockTags.DIAMOND_ORES).addTag(BlockTags.EMERALD_ORES);
     }
 }
 

@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '6.0.23'
 }
 
 group = mod_group_id
@@ -71,10 +71,14 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    // TODO: 根据实际使用的发行源和版本补齐 ProjectE、Mine Fargo 等依赖。
-    // 示例：
-    // implementation fg.deobf("curse.maven:projecte-226410:<file-id>")
-    // implementation fg.deobf("curse.maven:mine-fargo-<project-id>:<file-id>")
+    // ProjectE (CurseForge: project 226410, file 4901949 - PE1.0.1 for 1.20.1)
+    implementation fg.deobf("curse.maven:projecte-226410:4901949")
+
+    // [MyGo]Mine Fargo (CurseForge: project 1439618, file 7855812 - 1.2.42 for 1.20.1)
+    implementation fg.deobf("curse.maven:mygo-mine-fargo-1439618:7855812")
+
+    // Curios API (CurseForge: project 309927, file 5296876 - 5.9.0 for 1.20.1)
+    implementation fg.deobf("curse.maven:curios-309927:5296876")
 }
 
 tasks.withType(JavaCompile).configureEach {

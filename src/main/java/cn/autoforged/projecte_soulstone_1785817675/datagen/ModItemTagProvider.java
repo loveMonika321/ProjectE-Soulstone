@@ -29,8 +29,8 @@ extends ItemTagsProvider {
         super(output, lookupProvider, blockTags, "projecte_soulstone_1785817675", helper);
     }
 
-    protected void m_6577_(HolderLookup.Provider provider) {
-        this.m_206424_(ModTags.CURIOS_SOUL_STONE).m_255245_((Object)((Item)ModItems.RED_SOUL_STONE.get())).m_255245_((Object)((Item)ModItems.DARK_SOUL_STONE.get())).m_255245_((Object)((Item)ModItems.SAGE_SOUL_STONE.get())).m_255245_((Object)((Item)ModItems.TRANSMUTATION_SOUL_STONE.get())).m_255245_((Object)((Item)ModItems.ELEMENTAL_SOUL_STONE.get())).m_255245_((Object)((Item)ModItems.ALCHEMY_BAG_SOUL_STONE.get())).m_255245_((Object)((Item)ModItems.EQUIVALENT_SOUL.get()));
+    protected void addTags(HolderLookup.Provider provider) {
+        this.tag(ModTags.CURIOS_SOUL_STONE).add(ModItems.RED_SOUL_STONE.get()).add(ModItems.DARK_SOUL_STONE.get()).add(ModItems.SAGE_SOUL_STONE.get()).add(ModItems.TRANSMUTATION_SOUL_STONE.get()).add(ModItems.ELEMENTAL_SOUL_STONE.get()).add(ModItems.ALCHEMY_BAG_SOUL_STONE.get()).add(ModItems.EQUIVALENT_SOUL.get());
     }
 }
 

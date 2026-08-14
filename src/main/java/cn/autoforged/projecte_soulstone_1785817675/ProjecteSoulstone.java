@@ -51,7 +51,7 @@ public class ProjecteSoulstone {
         generator.addProvider(client, (DataProvider)new ModItemModelProvider(generator.getPackOutput(), helper));
         generator.addProvider(server, (DataProvider)new ModRecipeProvider(generator.getPackOutput()));
         ModBlockTagProvider blockTags = (ModBlockTagProvider)generator.addProvider(server, (DataProvider)new ModBlockTagProvider(generator.getPackOutput(), event.getLookupProvider(), helper));
-        generator.addProvider(server, (DataProvider)new ModItemTagProvider(generator.getPackOutput(), event.getLookupProvider(), blockTags.m_274426_(), helper));
+        generator.addProvider(server, (DataProvider)new ModItemTagProvider(generator.getPackOutput(), event.getLookupProvider(), blockTags.contentsGetter(), helper));
     }
 }
 

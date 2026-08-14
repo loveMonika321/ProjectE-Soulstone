@@ -35,47 +35,47 @@ extends Screen {
     private int ringRadius;
 
     public AlchemyBagSelectorScreen() {
-        super((Component)Component.m_237115_((String)"screen.projecte_soulstone_1785817675.alchemy_bag_selector"));
+        super((Component)Component.translatable((String)"screen.projecte_soulstone_1785817675.alchemy_bag_selector"));
     }
 
-    protected void m_7856_() {
-        super.m_7856_();
-        this.centerX = this.f_96543_ / 2;
-        this.centerY = this.f_96544_ / 2 - 20;
-        this.ringRadius = Math.max(72, Math.min(120, Math.min(this.f_96543_, this.f_96544_) / 3));
+    protected void init() {
+        super.init();
+        this.centerX = this.width / 2;
+        this.centerY = this.height / 2 - 20;
+        this.ringRadius = Math.max(72, Math.min(120, Math.min(this.width, this.height) / 3));
     }
 
-    public void m_88315_(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         ItemStack bag;
-        this.m_280273_(graphics);
+        this.renderBackground(graphics);
         int hovered = this.getHoveredIndex(mouseX, mouseY);
         for (int i = 0; i < COLORS.length; ++i) {
             ItemStack bag2;
             double angle = (double)i * (Math.PI * 2 / (double)COLORS.length) - 1.5707963267948966;
             int x = this.centerX + (int)(Math.cos(angle) * (double)this.ringRadius);
             int y = this.centerY + (int)(Math.sin(angle) * (double)this.ringRadius);
-            int color = COLORS[i].m_41071_();
+            int color = COLORS[i].getTextColor();
             AlchemyBagSelectorScreen.fillCircle(graphics, x, y, 18, color);
             if (i == hovered) {
                 AlchemyBagSelectorScreen.fillCircle(graphics, x, y, 14, -1);
             }
-            if ((bag2 = AlchemyBagSelectorScreen.getBagStack(COLORS[i])).m_41619_()) continue;
-            graphics.m_280480_(bag2, x - 8, y - 8);
+            if ((bag2 = AlchemyBagSelectorScreen.getBagStack(COLORS[i])).isEmpty()) continue;
+            graphics.renderItem(bag2, x - 8, y - 8);
         }
-        if (hovered >= 0 && !(bag = AlchemyBagSelectorScreen.getBagStack(COLORS[hovered])).m_41619_()) {
-            graphics.m_280153_(this.f_96547_, bag, mouseX, mouseY);
+        if (hovered >= 0 && !(bag = AlchemyBagSelectorScreen.getBagStack(COLORS[hovered])).isEmpty()) {
+            graphics.renderTooltip(this.font, bag, mouseX, mouseY);
         }
-        super.m_88315_(graphics, mouseX, mouseY, partialTick);
+        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
-    public boolean m_6375_(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int index;
         if (button == 0 && (index = this.getHoveredIndex(mouseX, mouseY)) >= 0) {
-            ModMessages.sendToServer(new OpenAlchemyBagPacket(COLORS[index].m_41060_()));
-            this.m_7379_();
+            ModMessages.sendToServer(new OpenAlchemyBagPacket(COLORS[index].getId()));
+            this.onClose();
             return true;
         }
-        return super.m_6375_(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     private int getHoveredIndex(double mouseX, double mouseY) {
@@ -94,13 +94,13 @@ extends Screen {
         int argb = 0xFF000000 | color;
         for (int dy = -radius; dy <= radius; ++dy) {
             int halfWidth = (int)Math.sqrt(radius * radius - dy * dy);
-            graphics.m_280509_(cx - halfWidth, cy + dy, cx + halfWidth + 1, cy + dy + 1, argb);
+            graphics.fill(cx - halfWidth, cy + dy, cx + halfWidth + 1, cy + dy + 1, argb);
         }
     }
 
     private static ItemStack getBagStack(DyeColor color) {
-        Item item = (Item)ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath((String)"projecte", (String)(color.m_41065_() + "_alchemical_bag")));
-        return item == null ? ItemStack.f_41583_ : new ItemStack((ItemLike)item);
+        Item item = (Item)ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath((String)"projecte", (String)(color.getName() + "_alchemical_bag")));
+        return item == null ? ItemStack.EMPTY : new ItemStack((ItemLike)item);
     }
 }
 

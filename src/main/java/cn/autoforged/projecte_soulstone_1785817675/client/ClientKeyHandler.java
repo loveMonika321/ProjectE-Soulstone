@@ -33,18 +33,18 @@ public class ClientKeyHandler {
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
-        Minecraft mc = Minecraft.m_91087_();
-        if (mc.f_91074_ == null) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) {
             return;
         }
-        while (((KeyMapping)ModKeyMappings.SAGE_ORB.get()).m_90859_()) {
+        while (((KeyMapping)ModKeyMappings.SAGE_ORB.get()).consumeClick()) {
             ModMessages.sendToServer(new SageOrbPacket());
         }
-        while (((KeyMapping)ModKeyMappings.OPEN_TRANSMUTATION.get()).m_90859_()) {
+        while (((KeyMapping)ModKeyMappings.OPEN_TRANSMUTATION.get()).consumeClick()) {
             ModMessages.sendToServer(new OpenTransmutationPacket());
         }
-        while (((KeyMapping)ModKeyMappings.OPEN_ALCHEMY_BAG.get()).m_90859_()) {
-            mc.m_91152_((Screen)new AlchemyBagSelectorScreen());
+        while (((KeyMapping)ModKeyMappings.OPEN_ALCHEMY_BAG.get()).consumeClick()) {
+            mc.setScreen((Screen)new AlchemyBagSelectorScreen());
         }
     }
 }

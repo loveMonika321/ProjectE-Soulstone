@@ -102,22 +102,22 @@ public class ModEvents {
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
         Player player;
-        if (event.getEntity().m_9236_().f_46443_) {
+        if (event.getEntity().level().isClientSide) {
             return;
         }
-        Entity entity = event.getSource().m_7639_();
+        Entity entity = event.getSource().getEntity();
         if (entity instanceof Player && SoulStoneUtil.hasEffect(player = (Player)entity, (Item)ModItems.RED_SOUL_STONE.get())) {
-            if (event.getSource().m_276093_(MyGoDamageType.TRUEDAMAGE)) {
+            if (event.getSource().is(MyGoDamageType.TRUEDAMAGE)) {
                 return;
             }
             event.setAmount(event.getAmount() * 3.0f);
             LivingEntity target = event.getEntity();
             CompoundTag data = player.getPersistentData();
-            int cooldown = data.m_128451_(DISINTEGRATE_COOLDOWN_KEY);
-            if (cooldown <= 0 && player.m_217043_().m_188500_() < 0.33) {
-                data.m_128405_(DISINTEGRATE_COOLDOWN_KEY, 20);
-                float damage = target.m_21233_() * 0.05f;
-                target.m_6469_(MyGoDamageType.hasSource((Level)target.m_9236_(), (ResourceKey)MyGoDamageType.TRUEDAMAGE, (Entity)player), damage);
+            int cooldown = data.getInt(DISINTEGRATE_COOLDOWN_KEY);
+            if (cooldown <= 0 && player.getRandom().nextDouble() < 0.33) {
+                data.putInt(DISINTEGRATE_COOLDOWN_KEY, 20);
+                float damage = target.getMaxHealth() * 0.05f;
+                target.hurt(MyGoDamageType.hasSource((Level)target.level(), (ResourceKey)MyGoDamageType.TRUEDAMAGE, (Entity)player), damage);
             }
         }
     }
@@ -126,12 +126,12 @@ public class ModEvents {
     public static void onElementalPlayerHurt(LivingHurtEvent event) {
         LivingEntity attacker;
         Player player;
-        if (event.getEntity().m_9236_().f_46443_) {
+        if (event.getEntity().level().isClientSide) {
             return;
         }
         LivingEntity livingEntity = event.getEntity();
         if (livingEntity instanceof Player && SoulStoneUtil.hasEffect(player = (Player)livingEntity, (Item)ModItems.ELEMENTAL_SOUL_STONE.get()) && (attacker = ModEvents.resolveAttacker(event.getSource())) != null && attacker != player) {
-            attacker.m_7292_(new MobEffectInstance(MobEffects.f_19597_, 200, 7));
+            attacker.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 7));
         }
     }
 
@@ -140,32 +140,32 @@ public class ModEvents {
         DamageSource source;
         Player player;
         LivingEntity livingEntity = event.getEntity();
-        if (livingEntity instanceof Player && SoulStoneUtil.hasEffect(player = (Player)livingEntity, (Item)ModItems.ELEMENTAL_SOUL_STONE.get()) && ((source = event.getSource()).m_276093_(DamageTypes.f_268631_) || source.m_276093_(DamageTypes.f_268468_) || source.m_276093_(DamageTypes.f_268546_) || source.m_276093_(DamageTypes.f_268434_) || source.m_276093_(DamageTypes.f_268444_))) {
+        if (livingEntity instanceof Player && SoulStoneUtil.hasEffect(player = (Player)livingEntity, (Item)ModItems.ELEMENTAL_SOUL_STONE.get()) && ((source = event.getSource()).is(DamageTypes.IN_FIRE) || source.is(DamageTypes.ON_FIRE) || source.is(DamageTypes.LAVA) || source.is(DamageTypes.HOT_FLOOR) || source.is(DamageTypes.FREEZE))) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
-        if (event.getEntity().m_9236_().f_46443_) {
+        if (event.getEntity().level().isClientSide) {
             return;
         }
         LivingEntity dead = event.getEntity();
-        if (dead.m_6095_().m_20674_() != MobCategory.MONSTER) {
+        if (dead.getType().getCategory() != MobCategory.MONSTER) {
             return;
         }
         Player killer = ModEvents.resolveKillerPlayer(event.getSource());
-        if (killer != null && SoulStoneUtil.hasEffect(killer, (Item)ModItems.SAGE_SOUL_STONE.get()) && killer.m_217043_().m_188500_() < 0.5) {
-            Level level = dead.m_9236_();
-            level.m_7967_((Entity)new ItemEntity(level, dead.m_20185_(), dead.m_20186_(), dead.m_20189_(), new ItemStack((ItemLike)Items.f_42417_)));
+        if (killer != null && SoulStoneUtil.hasEffect(killer, (Item)ModItems.SAGE_SOUL_STONE.get()) && killer.getRandom().nextDouble() < 0.5) {
+            Level level = dead.level();
+            level.addFreshEntity((Entity)new ItemEntity(level, dead.getX(), dead.getY(), dead.getZ(), new ItemStack((ItemLike)Items.GOLD_INGOT)));
         }
     }
 
     private static LivingEntity resolveAttacker(DamageSource source) {
         Projectile projectile;
         Entity entity;
-        Entity direct = source.m_7640_();
-        Entity entity2 = source.m_7639_();
+        Entity direct = source.getDirectEntity();
+        Entity entity2 = source.getEntity();
         if (entity2 instanceof LivingEntity) {
             LivingEntity living = (LivingEntity)entity2;
             return living;
@@ -174,11 +174,11 @@ public class ModEvents {
             LivingEntity living = (LivingEntity)direct;
             return living;
         }
-        if (entity2 instanceof Projectile && (entity = (projectile = (Projectile)entity2).m_19749_()) instanceof LivingEntity) {
+        if (entity2 instanceof Projectile && (entity = (projectile = (Projectile)entity2).getOwner()) instanceof LivingEntity) {
             LivingEntity owner = (LivingEntity)entity;
             return owner;
         }
-        if (direct instanceof Projectile && (entity = (projectile = (Projectile)direct).m_19749_()) instanceof LivingEntity) {
+        if (direct instanceof Projectile && (entity = (projectile = (Projectile)direct).getOwner()) instanceof LivingEntity) {
             LivingEntity owner = (LivingEntity)entity;
             return owner;
         }
@@ -188,8 +188,8 @@ public class ModEvents {
     private static Player resolveKillerPlayer(DamageSource source) {
         Projectile projectile;
         Entity entity;
-        Entity direct = source.m_7640_();
-        Entity entity2 = source.m_7639_();
+        Entity direct = source.getDirectEntity();
+        Entity entity2 = source.getEntity();
         if (entity2 instanceof Player) {
             Player player = (Player)entity2;
             return player;
@@ -198,11 +198,11 @@ public class ModEvents {
             Player player = (Player)direct;
             return player;
         }
-        if (entity2 instanceof Projectile && (entity = (projectile = (Projectile)entity2).m_19749_()) instanceof Player) {
+        if (entity2 instanceof Projectile && (entity = (projectile = (Projectile)entity2).getOwner()) instanceof Player) {
             Player player = (Player)entity;
             return player;
         }
-        if (direct instanceof Projectile && (entity = (projectile = (Projectile)direct).m_19749_()) instanceof Player) {
+        if (direct instanceof Projectile && (entity = (projectile = (Projectile)direct).getOwner()) instanceof Player) {
             Player player = (Player)entity;
             return player;
         }
@@ -213,30 +213,30 @@ public class ModEvents {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         boolean active;
         Player player = event.player;
-        Level level = player.m_9236_();
-        if (level.f_46443_) {
+        Level level = player.level();
+        if (level.isClientSide) {
             return;
         }
         CompoundTag data = player.getPersistentData();
-        int disintegrateCooldown = data.m_128451_(DISINTEGRATE_COOLDOWN_KEY);
+        int disintegrateCooldown = data.getInt(DISINTEGRATE_COOLDOWN_KEY);
         if (disintegrateCooldown > 0) {
-            data.m_128405_(DISINTEGRATE_COOLDOWN_KEY, disintegrateCooldown - 1);
+            data.putInt(DISINTEGRATE_COOLDOWN_KEY, disintegrateCooldown - 1);
         }
         ServerPacketHandlers.tickSageOrbCooldown(player);
-        if (data.m_128441_("projecte_soulstone:transmutation_pause_daytime")) {
-            if (player.f_36096_ instanceof TransmutationContainer) {
-                ((ServerLevel)level).m_8615_(data.m_128454_("projecte_soulstone:transmutation_pause_daytime"));
+        if (data.contains("projecte_soulstone:transmutation_pause_daytime")) {
+            if (player.containerMenu instanceof TransmutationContainer) {
+                ((ServerLevel)level).setDayTime(data.getLong("projecte_soulstone:transmutation_pause_daytime"));
             } else {
-                data.m_128473_("projecte_soulstone:transmutation_pause_daytime");
+                data.remove("projecte_soulstone:transmutation_pause_daytime");
             }
         }
         boolean wearingDark = SoulStoneUtil.hasEffect(player, (Item)ModItems.DARK_SOUL_STONE.get());
-        boolean sprinting = player.m_20142_();
-        int phaseCooldown = data.m_128451_(PHASE_COOLDOWN_KEY);
+        boolean sprinting = player.isSprinting();
+        int phaseCooldown = data.getInt(PHASE_COOLDOWN_KEY);
         if (phaseCooldown > 0) {
-            data.m_128405_(PHASE_COOLDOWN_KEY, phaseCooldown - 1);
+            data.putInt(PHASE_COOLDOWN_KEY, phaseCooldown - 1);
         }
-        boolean bl = active = data.m_128451_(PHASE_TIME_KEY) > 0;
+        boolean bl = active = data.getInt(PHASE_TIME_KEY) > 0;
         if (wearingDark && sprinting && phaseCooldown <= 0) {
             if (ModEvents.canPhaseThrough(player, level)) {
                 long consumed = EMCHelper.consumePlayerFuel((Player)player, (long)50L);
@@ -247,14 +247,14 @@ public class ModEvents {
                     return;
                 }
                 if (!active) {
-                    data.m_128405_(PHASE_TIME_KEY, 100);
+                    data.putInt(PHASE_TIME_KEY, 100);
                     active = true;
                     ModMessages.sendPhaseSync((ServerPlayer)player, true);
                 }
-                player.f_19794_ = true;
-                player.m_20242_(true);
-                int remaining = data.m_128451_(PHASE_TIME_KEY) - 1;
-                data.m_128405_(PHASE_TIME_KEY, remaining);
+                player.noPhysics = true;
+                player.setNoGravity(true);
+                int remaining = data.getInt(PHASE_TIME_KEY) - 1;
+                data.putInt(PHASE_TIME_KEY, remaining);
                 if (remaining <= 0) {
                     ModEvents.stopPhase(player, data);
                     return;
@@ -266,48 +266,48 @@ public class ModEvents {
         } else if (active) {
             ModEvents.stopPhase(player, data);
         } else if (wearingDark) {
-            if (player.f_19794_) {
-                player.f_19794_ = false;
+            if (player.noPhysics) {
+                player.noPhysics = false;
             }
-            if (player.m_20068_()) {
-                player.m_20242_(false);
+            if (player.isNoGravity()) {
+                player.setNoGravity(false);
             }
         }
     }
 
     private static boolean canPhaseThrough(Player player, Level level) {
-        Direction facing = player.m_6350_();
-        BlockPos ahead = player.m_20183_().m_121945_(facing);
-        return !ModEvents.isBlocking(level, ahead) && !ModEvents.isBlocking(level, ahead.m_7494_());
+        Direction facing = player.getDirection();
+        BlockPos ahead = player.blockPosition().relative(facing);
+        return !ModEvents.isBlocking(level, ahead) && !ModEvents.isBlocking(level, ahead.above());
     }
 
     private static boolean isBlocking(Level level, BlockPos pos) {
-        BlockState state = level.m_8055_(pos);
-        return state.m_280296_() && !state.m_204336_(ModTags.PHASE_PASSABLE);
+        BlockState state = level.getBlockState(pos);
+        return state.isSolid() && !state.is(ModTags.PHASE_PASSABLE);
     }
 
     private static void spawnPhaseParticles(Player player, Level level) {
         if (level instanceof ServerLevel) {
             ServerLevel serverLevel = (ServerLevel)level;
-            Vec3 pos = player.m_20182_().m_82520_(0.0, 1.1, 0.0);
+            Vec3 pos = player.position().add(0.0, 1.1, 0.0);
             DustParticleOptions particle = new DustParticleOptions(new Vector3f(0.3f, 0.6f, 1.0f), 1.0f);
-            double angleBase = (double)level.m_46467_() * 0.3;
-            RandomSource random = player.m_217043_();
+            double angleBase = (double)level.getGameTime() * 0.3;
+            RandomSource random = player.getRandom();
             for (int i = 0; i < 3; ++i) {
                 double angle = angleBase + (double)i * 2.0943951023931953;
-                double x = pos.f_82479_ + Math.cos(angle) * 0.6;
-                double z = pos.f_82481_ + Math.sin(angle) * 0.6;
-                serverLevel.m_8767_((ParticleOptions)particle, x, pos.f_82480_, z, 1, 0.0, 0.0, 0.0, 0.0);
+                double x = pos.x + Math.cos(angle) * 0.6;
+                double z = pos.z + Math.sin(angle) * 0.6;
+                serverLevel.sendParticles((ParticleOptions)particle, x, pos.y, z, 1, 0.0, 0.0, 0.0, 0.0);
             }
-            serverLevel.m_8767_((ParticleOptions)particle, pos.f_82479_, pos.f_82480_, pos.f_82481_, 1, random.m_188500_() * 0.2 - 0.1, random.m_188500_() * 0.2, random.m_188500_() * 0.2 - 0.1, 0.0);
+            serverLevel.sendParticles((ParticleOptions)particle, pos.x, pos.y, pos.z, 1, random.nextDouble() * 0.2 - 0.1, random.nextDouble() * 0.2, random.nextDouble() * 0.2 - 0.1, 0.0);
         }
     }
 
     private static void stopPhase(Player player, CompoundTag data) {
-        data.m_128405_(PHASE_TIME_KEY, 0);
-        data.m_128405_(PHASE_COOLDOWN_KEY, 200);
-        player.f_19794_ = false;
-        player.m_20242_(false);
+        data.putInt(PHASE_TIME_KEY, 0);
+        data.putInt(PHASE_COOLDOWN_KEY, 200);
+        player.noPhysics = false;
+        player.setNoGravity(false);
         if (player instanceof ServerPlayer) {
             ServerPlayer serverPlayer = (ServerPlayer)player;
             ModMessages.sendPhaseSync(serverPlayer, false);

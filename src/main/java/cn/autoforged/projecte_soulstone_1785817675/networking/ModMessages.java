@@ -37,8 +37,8 @@ public class ModMessages {
     }
 
     public static void sendPhaseSync(ServerPlayer player, boolean active) {
-        if (INSTANCE != null && player.f_8906_ != null) {
-            INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), (Object)new PhaseSyncPacket(active));
+        if (INSTANCE != null && player.connection != null) {
+            INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PhaseSyncPacket(active));
         }
     }
 

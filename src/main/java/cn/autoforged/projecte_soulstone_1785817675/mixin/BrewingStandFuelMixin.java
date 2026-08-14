@@ -36,8 +36,8 @@ public class BrewingStandFuelMixin {
         if (level == null || blockEntity == null) {
             return;
         }
-        for (Player player : level.m_6907_()) {
-            if (!(player.m_20275_((double)pos.m_123341_() + 0.5, (double)pos.m_123342_() + 0.5, (double)pos.m_123343_() + 0.5) <= 64.0) || !SoulStoneUtil.hasEffect(player, (Item)ModItems.SAGE_SOUL_STONE.get())) continue;
+        for (Player player : level.players()) {
+            if (!(player.distanceToSqr((double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5) <= 64.0) || !SoulStoneUtil.hasEffect(player, (Item)ModItems.SAGE_SOUL_STONE.get())) continue;
             ((BrewingStandBlockEntityAccessor)blockEntity).setFuel(20);
             return;
         }

@@ -96,22 +96,22 @@ public final class ServerPacketHandlers {
             return;
         }
         CompoundTag data = player.getPersistentData();
-        int cooldown = data.m_128451_(SAGE_ORB_COOLDOWN_KEY);
+        int cooldown = data.getInt(SAGE_ORB_COOLDOWN_KEY);
         if (cooldown > 0) {
-            player.m_5661_((Component)Component.m_237110_((String)"message.projecte_soulstone_1785817675.sage_orb.cooldown", (Object[])new Object[]{cooldown / 20}), true);
+            player.displayClientMessage((Component)Component.translatable((String)"message.projecte_soulstone_1785817675.sage_orb.cooldown", (Object[])new Object[]{cooldown / 20}), true);
             return;
         }
-        data.m_128405_(SAGE_ORB_COOLDOWN_KEY, 12000);
-        ServerLevel level = player.m_284548_();
-        AABB box = player.m_20191_().m_82400_(4.0);
-        List targets = level.m_6249_((Entity)player, box, e -> e instanceof Mob && !(e instanceof Player));
+        data.putInt(SAGE_ORB_COOLDOWN_KEY, 12000);
+        ServerLevel level = player.serverLevel();
+        AABB box = player.getBoundingBox().inflate(4.0);
+        List<Entity> targets = level.getEntities((Entity)player, box, e -> e instanceof Mob && !(e instanceof Player));
         int transformed = 0;
         for (Entity entity : targets) {
             if (!ServerPacketHandlers.transformMob((Player)player, level, (Mob)entity)) continue;
             ++transformed;
         }
-        level.m_6263_(null, player.m_20185_(), player.m_20186_(), player.m_20189_(), (SoundEvent)PESounds.TRANSMUTE.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
-        player.m_5661_((Component)Component.m_237110_((String)"message.projecte_soulstone_1785817675.sage_orb.done", (Object[])new Object[]{transformed}), true);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), (SoundEvent)PESounds.TRANSMUTE.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+        player.displayClientMessage((Component)Component.translatable((String)"message.projecte_soulstone_1785817675.sage_orb.done", (Object[])new Object[]{transformed}), true);
     }
 
     private static boolean transformMob(Player player, ServerLevel level, Mob ent) {
@@ -120,20 +120,20 @@ public final class ServerPacketHandlers {
         if (randomized == null || EMCHelper.consumePlayerFuel((Player)player, (long)384L) == -1L) {
             return false;
         }
-        randomized.m_7678_(ent.m_20185_(), ent.m_20186_(), ent.m_20189_(), ent.m_146908_(), ent.m_146909_());
-        Rabbit.RabbitGroupData data = randomized instanceof Rabbit && (rabbit = (Rabbit)randomized).m_28554_() == Rabbit.Variant.EVIL ? new Rabbit.RabbitGroupData(Rabbit.Variant.EVIL) : null;
-        ForgeEventFactory.onFinalizeSpawn((Mob)randomized, (ServerLevelAccessor)level, (DifficultyInstance)level.m_6436_(randomized.m_20183_()), (MobSpawnType)MobSpawnType.CONVERSION, (SpawnGroupData)data, null);
-        level.m_7967_((Entity)randomized);
+        randomized.moveTo(ent.getX(), ent.getY(), ent.getZ(), ent.getYRot(), ent.getXRot());
+        Rabbit.RabbitGroupData data = randomized instanceof Rabbit && (rabbit = (Rabbit)randomized).getVariant() == Rabbit.Variant.EVIL ? new Rabbit.RabbitGroupData(Rabbit.Variant.EVIL) : null;
+        ForgeEventFactory.onFinalizeSpawn((Mob)randomized, (ServerLevelAccessor)level, (DifficultyInstance)level.getCurrentDifficultyAt(randomized.blockPosition()), (MobSpawnType)MobSpawnType.CONVERSION, (SpawnGroupData)data, null);
+        level.addFreshEntity((Entity)randomized);
         if (randomized.isAddedToWorld()) {
-            randomized.m_8032_();
-            ent.m_146870_();
+            randomized.playAmbientSound();
+            ent.discard();
         }
         ServerPacketHandlers.spawnTransformParticles(level, (Entity)ent);
         return true;
     }
 
     private static void spawnTransformParticles(ServerLevel level, Entity target) {
-        level.m_8767_((ParticleOptions)ParticleTypes.f_123760_, target.m_20185_(), target.m_20186_() + 1.0, target.m_20189_(), 8, level.f_46441_.m_188500_() * 0.5 - 0.25, 0.2, level.f_46441_.m_188500_() * 0.5 - 0.25, 0.0);
+        level.sendParticles((ParticleOptions)ParticleTypes.PORTAL, target.getX(), target.getY() + 1.0, target.getZ(), 8, level.random.nextDouble() * 0.5 - 0.25, 0.2, level.random.nextDouble() * 0.5 - 0.25, 0.0);
     }
 
     public static void handleOpenTransmutation(ServerPlayer player) {
@@ -143,15 +143,15 @@ public final class ServerPacketHandlers {
         if (!SoulStoneUtil.hasEffect((Player)player, (Item)ModItems.TRANSMUTATION_SOUL_STONE.get())) {
             return;
         }
-        player.getPersistentData().m_128356_("projecte_soulstone:transmutation_pause_daytime", player.m_284548_().m_46468_());
+        player.getPersistentData().putLong("projecte_soulstone:transmutation_pause_daytime", player.serverLevel().getDayTime());
         NetworkHooks.openScreen((ServerPlayer)player, (MenuProvider)new MenuProvider(){
 
-            public AbstractContainerMenu m_7208_(int windowId, Inventory playerInventory, Player p) {
+            public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player p) {
                 return new TransmutationContainer(windowId, playerInventory);
             }
 
-            public Component m_5446_() {
-                return Component.m_237115_((String)"container.projecte_soulstone_1785817675.transmutation");
+            public Component getDisplayName() {
+                return Component.translatable((String)"container.projecte_soulstone_1785817675.transmutation");
             }
         }, buf -> buf.writeBoolean(false));
     }
@@ -166,7 +166,7 @@ public final class ServerPacketHandlers {
         if (!SoulStoneUtil.hasEffect((Player)player, (Item)ModItems.ALCHEMY_BAG_SOUL_STONE.get())) {
             return;
         }
-        final DyeColor color = DyeColor.m_41053_((int)colorId);
+        final DyeColor color = DyeColor.byId((int)colorId);
         Optional bagProvider = player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY).resolve();
         if (bagProvider.isEmpty()) {
             return;
@@ -178,25 +178,25 @@ public final class ServerPacketHandlers {
         final IItemHandlerModifiable modifiable = (IItemHandlerModifiable)bagInventory;
         NetworkHooks.openScreen((ServerPlayer)player, (MenuProvider)new MenuProvider(){
 
-            public AbstractContainerMenu m_7208_(int windowId, Inventory playerInventory, Player p) {
-                return new AlchBagContainer(windowId, playerInventory, null, modifiable, playerInventory.f_35977_, false);
+            public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player p) {
+                return new AlchBagContainer(windowId, playerInventory, null, modifiable, playerInventory.selected, false);
             }
 
-            public Component m_5446_() {
-                return Component.m_237110_((String)"container.projecte_soulstone_1785817675.alchemy_bag", (Object[])new Object[]{color.m_41065_()});
+            public Component getDisplayName() {
+                return Component.translatable((String)"container.projecte_soulstone_1785817675.alchemy_bag", (Object[])new Object[]{color.getName()});
             }
         }, buf -> {
-            buf.m_130068_((Enum)InteractionHand.MAIN_HAND);
-            buf.writeByte(player.m_150109_().f_35977_);
+            buf.writeEnum((Enum)InteractionHand.MAIN_HAND);
+            buf.writeByte(player.getInventory().selected);
             buf.writeBoolean(false);
         });
     }
 
     public static void tickSageOrbCooldown(Player player) {
         CompoundTag data = player.getPersistentData();
-        int cooldown = data.m_128451_(SAGE_ORB_COOLDOWN_KEY);
+        int cooldown = data.getInt(SAGE_ORB_COOLDOWN_KEY);
         if (cooldown > 0) {
-            data.m_128405_(SAGE_ORB_COOLDOWN_KEY, cooldown - 1);
+            data.putInt(SAGE_ORB_COOLDOWN_KEY, cooldown - 1);
         }
     }
 }

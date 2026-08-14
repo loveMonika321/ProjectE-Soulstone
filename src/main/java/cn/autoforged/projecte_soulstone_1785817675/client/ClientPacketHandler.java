@@ -13,9 +13,9 @@ import net.minecraft.client.player.LocalPlayer;
 
 public class ClientPacketHandler {
     public static void handlePhaseSync(PhaseSyncPacket msg) {
-        LocalPlayer player = Minecraft.m_91087_().f_91074_;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
-            player.f_19794_ = msg.isActive();
+            player.noPhysics = msg.isActive();
         }
     }
 }

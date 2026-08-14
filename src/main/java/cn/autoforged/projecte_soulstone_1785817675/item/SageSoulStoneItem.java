@@ -35,12 +35,12 @@ implements ICurioItem {
     public static final int ORB_RANGE_HALF = 4;
 
     public SageSoulStoneItem() {
-        super(new Item.Properties().m_41487_(1).m_41497_(Rarity.EPIC));
+        super(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
     }
 
-    public void m_7373_(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        tooltipComponents.add((Component)Component.m_237115_((String)"tooltip.projecte_soulstone_1785817675.sage_soul_stone").m_130940_(ChatFormatting.GRAY));
-        super.m_7373_(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        tooltipComponents.add((Component)Component.translatable((String)"tooltip.projecte_soulstone_1785817675.sage_soul_stone").withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 }
 

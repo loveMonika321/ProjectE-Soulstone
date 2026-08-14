@@ -26,10 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PowderSnowImmunityMixin {
     @Inject(method={"canFreeze"}, at={@At(value="HEAD")}, cancellable=true)
     private void preventFreezing(CallbackInfoReturnable<Boolean> cir) {
-        Player player;
-        PowderSnowImmunityMixin powderSnowImmunityMixin = this;
-        if (powderSnowImmunityMixin instanceof Player && SoulStoneUtil.hasEffect(player = (Player)powderSnowImmunityMixin, (Item)ModItems.ELEMENTAL_SOUL_STONE.get())) {
-            cir.setReturnValue((Object)false);
+        if ((Object)this instanceof Player player && SoulStoneUtil.hasEffect(player, ModItems.ELEMENTAL_SOUL_STONE.get())) {
+            cir.setReturnValue(false);
         }
     }
 }

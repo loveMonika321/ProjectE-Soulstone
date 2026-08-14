@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ModBusEvents {
     @SubscribeEvent
     public static void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.f_256869_) {
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ModItems.RED_SOUL_STONE);
             event.accept(ModItems.DARK_SOUL_STONE);
             event.accept(ModItems.SAGE_SOUL_STONE);
